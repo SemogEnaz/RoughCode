@@ -2,48 +2,42 @@
 #include "TextFormat.h"
 
 //this is for calculating the title bar
-TextFormat::TextFormat(stringstream& inputStr, TextFormatEnum barLenChoice, TextFormatEnum barChoice)
+TextFormat::TextFormat(stringstream& inputStr)
 : originalInputString(inputStr.str())
 {
-    processInput(barLenChoice, barChoice);
+    processInput(FINDTITLE);
 }
 
 //this is to use a pre-set value, the user can specify the length to set in the constructor
-TextFormat::TextFormat(stringstream& inputStr, TextFormatEnum barLenChoice, int lenOfBar2Set, TextFormatEnum barChoice)
+TextFormat::TextFormat(stringstream& inputStr, int lenOfBar2Set)
 : originalInputString(inputStr.str()),
   titleBarLength(lenOfBar2Set)
 {
-    processInput(barLenChoice, barChoice);
+    processInput(USESETTITLE);
 }
 
-void TextFormat::processInput(TextFormatEnum titleChoise, TextFormatEnum barChoice)
+void TextFormat::processInput(TextFormatEnum barLenChoice)
 {
     string lineData = "";
 
     size_t indexCenter = 0;
     size_t indexJustify = 0;
     size_t indexWrap = 0;
-
-    bool wantTopTitle = (barChoice == TOPTITLE || barChoice == BOTHTITLE);
-    bool wantBottomTitle = (barChoice == BOTTOMTITLE || barChoice == BOTHTITLE);
+    size_t indexBar = 0;
 
     //when using, you can set the title pre function call and mention it in the second argument and then just the hard value or you can opt for the deduction by the program (5% larger) MAKE CONSTRUCTOR OPTION TO BE ABLE TO CHANGE THE %INCREASE
-    if (titleChoise == FINDTITLE)
+    if (barLenChoice == FINDTITLE)
         calculateBarLength();
-
-    if (wantTopTitle) appendTitleBar();
 
     while(getline(originalInputString, lineData))
     {
         //now we search the string for the commands
 
-        //the int recast of the find functions will retrun -1 if the character/string is not found else it will return the index of the substr
-
         indexCenter = lineData.find(centerChar);
         indexJustify = lineData.find(justifyChar);
-        indexWrap = lineData.find(wrapChar) ;
+        indexWrap = lineData.find(wrapChar);
+        indexBar = lineData.find(barChar);
 
-        //center command
         if (indexCenter != std::string::npos)
         { 
             removeCmdChar(lineData, centerChar);
@@ -56,11 +50,11 @@ void TextFormat::processInput(TextFormatEnum titleChoise, TextFormatEnum barChoi
             removeCmdChar(lineData, wrapChar);
             centerTextWrapper(lineData);
         }
+        else if (indexBar != std::string::npos)
+            appendTitleBar();
         else
             outputString << lineData << "\n";
     }
-
-    if (wantBottomTitle) appendTitleBar();
 }
 
 bool checkForEven(int num)
@@ -84,9 +78,10 @@ void TextFormat::calculateBarLength()
     string lineData = "";
 
     //finding the longest line in the input string
+    //the longest line will probably have a command, that will be erased in processing so we substract one form the line length
     while (getline(inputString, lineData))
-        if ((int)lineData.length() > titleBarLength)
-            titleBarLength = (int)lineData.length();
+        if (((int)lineData.length()-1) > titleBarLength)
+            titleBarLength = ((int)lineData.length()-1);
 
     isLineLenEven = checkForEven((int)lineData.length());
 
@@ -131,9 +126,9 @@ void TextFormat::justifyText(string& text2Justify)
 
     int lenLeftText = 0;
 
-    if (text2Justify.substr(0, 1) != justifyChar)
+    if (text2Justify[0] != justifyChar)
         //index of the left text = 0
-        lenLeftText = text2Justify.find(justifyChar) - 1; 
+        lenLeftText = text2Justify.find(justifyChar); 
     
     //we will not add one as that character will be replaced with "" later
     int indexRightText = text2Justify.find(justifyChar);
@@ -160,7 +155,7 @@ void TextFormat::centerTextWrapper(string& text2center)
     outputString << "\n";
 }
 
-void TextFormat::removeCmdChar(string& lineData, string commandStr)
+void TextFormat::removeCmdChar(string& lineData, char commandStr)
 {
     int indexOfCommand = lineData.find(commandStr);
     lineData.replace(indexOfCommand, 1, "");
@@ -175,7 +170,7 @@ void TextFormat::putSpace(int textLength, int space2insert)
             outputString << " ";
     }
     else
-        cout << "title bar too short for this operation" << endl;
+        cout << "titleBarLength < textLength";
 }
 
 void TextFormat::display()
@@ -186,4 +181,9 @@ void TextFormat::display()
 int TextFormat::getTitleBarLen()
 {
     return titleBarLength;
+}
+
+stringstream& TextFormat::getText()
+{
+    return outputString;
 }
