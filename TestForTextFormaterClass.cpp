@@ -8,9 +8,7 @@ int main(){
                             "$this can be the wrapped thing\n"
                             "this is just left justified");
 
-    string inputString = testStream.str();
-
-    TextFormat testStuff(inputString, FINDTITLE);
+    TextFormat testStuff(testStream, FINDTITLE);
 
     testStuff.display();
 }
