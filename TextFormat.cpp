@@ -2,21 +2,21 @@
 #include "TextFormat.h"
 
 //this is for calculating the title bar
-TextFormat::TextFormat(stringstream& inputStr, TextFormatEnum barChoice)
+TextFormat::TextFormat(stringstream& inputStr, TextFormatEnum barLenChoice, TextFormatEnum barChoice)
 : originalInputString(inputStr.str())
 {
-    processInput(barChoice);
+    processInput(barLenChoice, barChoice);
 }
 
 //this is to use a pre-set value, the user can specify the length to set in the constructor
-TextFormat::TextFormat(stringstream& inputStr, TextFormatEnum barChoice, int lenOfBar2Set)
+TextFormat::TextFormat(stringstream& inputStr, TextFormatEnum barLenChoice, int lenOfBar2Set, TextFormatEnum barChoice)
 : originalInputString(inputStr.str()),
   titleBarLength(lenOfBar2Set)
 {
-    processInput(barChoice);
+    processInput(barLenChoice, barChoice);
 }
 
-void TextFormat::processInput(TextFormatEnum titleChoise)
+void TextFormat::processInput(TextFormatEnum titleChoise, TextFormatEnum barChoice)
 {
     string lineData = "";
 
@@ -24,11 +24,14 @@ void TextFormat::processInput(TextFormatEnum titleChoise)
     size_t indexJustify = 0;
     size_t indexWrap = 0;
 
-    //when using, you can set the title pre function call and mention it in the second argument and then just the hard value or you can opt for the deduction by the program (5% larger)
+    bool wantTopTitle = (barChoice == TOPTITLE || barChoice == BOTHTITLE);
+    bool wantBottomTitle = (barChoice == BOTTOMTITLE || barChoice == BOTHTITLE);
+
+    //when using, you can set the title pre function call and mention it in the second argument and then just the hard value or you can opt for the deduction by the program (5% larger) MAKE CONSTRUCTOR OPTION TO BE ABLE TO CHANGE THE %INCREASE
     if (titleChoise == FINDTITLE)
         calculateBarLength();
 
-    appendTitleBar();
+    if (wantTopTitle) appendTitleBar();
 
     while(getline(originalInputString, lineData))
     {
@@ -53,9 +56,11 @@ void TextFormat::processInput(TextFormatEnum titleChoise)
             removeCmdChar(lineData, wrapChar);
             centerTextWrapper(lineData);
         }
+        else
+            outputString << lineData << "\n";
     }
 
-    appendTitleBar();
+    if (wantBottomTitle) appendTitleBar();
 }
 
 bool checkForEven(int num)
@@ -69,6 +74,7 @@ bool checkForEven(int num)
 //find the bar length needed and 
 void TextFormat::calculateBarLength()
 {
+    //THERE IS A MINOR ERROR IN THIS FUNCTION, THE LENGTH OF THE TITLE BAR IS FOUND USING THE INPUT WITH COMMAND CHARACTERS, THESE WILL BE REMOVED LATER, THEN THE CENTERING WILL BE OFF BY +/- ONE CHAR, YOU NEED TO FIX THAT LATER BY MAKING THE removeAllCmdChar() function in this class;
     titleBarLength = 0;
 
     bool isTitleBarLenEven = false;
@@ -123,8 +129,11 @@ void TextFormat::justifyText(string& text2Justify)
     //-1 because the justifyChar character will be replaced with ""
     int textLength = (int)text2Justify.length() - 1;
 
-    //index of the left text = 0
-    int lenLeftText = text2Justify.find(justifyChar) - 1; 
+    int lenLeftText = 0;
+
+    if (text2Justify.substr(0, 1) != justifyChar)
+        //index of the left text = 0
+        lenLeftText = text2Justify.find(justifyChar) - 1; 
     
     //we will not add one as that character will be replaced with "" later
     int indexRightText = text2Justify.find(justifyChar);
@@ -140,7 +149,7 @@ void TextFormat::justifyText(string& text2Justify)
     putSpace(textLength, space2end);
 
     //right text
-    outputString << right << text2Justify.substr(indexRightText, lenRightText);
+    outputString << right << text2Justify.substr(indexRightText, lenRightText) << "\n";
 }
 
 void TextFormat::centerTextWrapper(string& text2center)
@@ -173,3 +182,8 @@ void TextFormat::display()
 {
     cout << outputString.str();
 }    
+
+int TextFormat::getTitleBarLen()
+{
+    return titleBarLength;
+}
