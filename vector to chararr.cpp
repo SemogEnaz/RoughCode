@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void assigenChar(char*, char);
+void assignChar(char*, char);
 void printChar(char*);
 void fillVecWithStuff(vector<string>&);
 void printVector(vector<string>&);
@@ -16,7 +16,7 @@ int main(){
     char charArr[20][20] = {' '};
 
     //deference once to send address of [0][0]
-    assigenChar(*charArr, '0');
+    assignChar(*charArr, '0');
 
     printChar(*charArr);
 
@@ -84,7 +84,7 @@ void printChar(char *charArr)
     }
 }
 
-void assigenChar(char *myArr, char charToAssign)
+void assignChar(char *myArr, char charToAssign)
 {
     int numColumns = 20;
     int numRows = numColumns;

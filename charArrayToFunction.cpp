@@ -3,14 +3,14 @@
 
 using namespace std;
 
-void assigenChar(char*, char);
+void assignChar(char*, char);
 
 int main(){
 
     char mapArr[20][20] = {' '};
 
     //deference once to send address of [0][0]
-    assigenChar(*mapArr, '0');
+    assignChar(*mapArr, '0');
 
 return 0;
 }
@@ -32,7 +32,7 @@ after j loop is over, l will maintain the linear progress made along the memory
 and i can be used to understand the linear progression as you would the progression
 of a 2-D array
 **/
-void assigenChar(char *myArr, char charToAssign)
+void assignChar(char *myArr, char charToAssign)
 {
     for (int k = 0; k < 2; k++)
     {

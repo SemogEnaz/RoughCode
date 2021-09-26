@@ -97,10 +97,10 @@ void TextFormat::appendTitleBar()
 {
     stringstream titleBar("");
 
-    titleBar.fill(titleBarChar);
-    titleBar.width(titleBarLength);
+    for (int i = 0; i < titleBarLength; i++)
+        outputString << titleBarChar;
 
-    outputString << titleBar.str() << "\n";
+    outputString << "\n";
 
 }
 
@@ -132,7 +132,7 @@ void TextFormat::justifyText(string& text2Justify)
 
     removeCmdChar(text2Justify, justifyChar);
 
-    int space2end = floor(titleBarLength - (2*textLength));
+    int space2end = (titleBarLength - (lenLeftText + lenRightText));
 
     //left text
     outputString << text2Justify.substr(0, lenLeftText);
@@ -151,7 +151,7 @@ void TextFormat::centerTextWrapper(string& text2center)
     outputString << "\n";
 }
 
-void TextFormat::removeCmdChar(string& lineData, string& commandStr)
+void TextFormat::removeCmdChar(string& lineData, string commandStr)
 {
     int indexOfCommand = lineData.find(commandStr);
     lineData.replace(indexOfCommand, 1, "");
@@ -162,8 +162,8 @@ void TextFormat::putSpace(int textLength, int space2insert)
     //this controle structure checks to prevent negative width
     if (titleBarLength > textLength)
     {    
-        outputString.fill(' ');
-        outputString.width(space2insert);
+        for(int i = 0; i < space2insert; i++)
+            outputString << " ";
     }
     else
         cout << "title bar too short for this operation" << endl;
