@@ -14,5 +14,13 @@ int main(){
 
     string str2 = name;
 
+    string* str3 = &str2;
+
+    cout << *str3;
+
+    //delete str3;
+
+    cout << str3;
+
     return 0;
 }
