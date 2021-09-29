@@ -18,8 +18,6 @@ int main(){
 
     cout << *str3;
 
-    //delete str3;
-
     cout << str3;
 
     return 0;
