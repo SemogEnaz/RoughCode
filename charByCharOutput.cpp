@@ -35,7 +35,7 @@ int main(){
     "the source code\n"
     "Hope this comes in handy :]\n*/\n";
 
-    cout << testStr << "\n\n";
+    //cout << testStr << "\n\n";
 
     for (int i = 0; testStr[i] != '\0'; i++)
     {   
