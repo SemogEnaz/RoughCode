@@ -2,6 +2,7 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
+#include <string>
 
 using namespace std;
 
@@ -37,13 +38,15 @@ int main(){
 
     //cout << testStr << "\n\n";
 
+    string waitStr = "";
+
     for (int i = 0; testStr[i] != '\0'; i++)
     {   
         if (testStr[i] != '\n' || testStr[i] == '\t')  
         {
             cout << testStr[i];
             fflush(stdout);
-            this_thread::sleep_for(0.08s);
+            this_thread::sleep_for(0.06s);
         }
         else if (testStr[i] == '\n')
             cout << '\n';
@@ -51,7 +54,9 @@ int main(){
             cout << '\t';
     }
 
-    cout  << '\n';
+    cout << '\n';
 
+    getline(cin, waitStr) ; 
+    
     return 0;
 }
